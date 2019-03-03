@@ -91,6 +91,7 @@ var files = {
 		"webgl_loader_gcode",
 		"webgl_loader_gltf",
 		"webgl_loader_gltf_extensions",
+		"webgl_loader_gltf_custom_extensions",
 		"webgl_loader_imagebitmap",
 		"webgl_loader_json_claraio",
 		"webgl_loader_kmz",

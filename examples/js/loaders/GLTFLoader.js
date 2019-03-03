@@ -1700,7 +1700,7 @@ THREE.GLTFLoader = ( function () {
 				 	&& typeof extension[eventType] === 'function' // if the type function exists
 				 	&& objectDef.extensions && objectDef.extensions[name] !== undefined ) {
 
-					modifiedObject = extension[eventType](objectDef, object);
+					modifiedObject = extension[eventType](objectDef.extensions[name], object);
 					
 					if( modifiedObject === undefined ) {
 

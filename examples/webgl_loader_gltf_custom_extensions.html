@@ -151,7 +151,7 @@
 				
 				loader.registerExtension('EXT_my_extension', function ( json ) {
 					function MyExtension( json ) {
-						this.name = 'EXT_my_extension'; // todo change register design to better enforce the name
+						this.name = 'EXT_my_extension';
 					}
 
 					MyExtension.prototype.onNode = function(def, node) {
@@ -160,16 +160,66 @@
 
 					MyExtension.prototype.onMaterial = function(def, material) {
 						console.log('onMaterial', def, material);
+
+						if ( def.propertyChange ) {
+
+							material.userData.propertyChange = {};
+							var propertyChange = material.userData.propertyChange;
+
+							for ( var i = 0, pcLen = def.propertyChange.length; i < pcLen; i++ ) {
+								var change = def.propertyChange[i];
+
+								switch ( change.key ) {
+									case 'baseColorFactor':
+										propertyChange.colors = change.options.map(function(color) {
+											return new THREE.Color(color.value[0], color.value[1], color.value[2]);
+										});
+
+										material.setColorOption = function( index ) {
+											if(index > this.userData.propertyChange.colors.length) return;
+
+											this.color = this.userData.propertyChange.colors[index];
+										};
+
+										material.getColorOptions = function() {
+
+											// return internal reference so one can add additional colors at runtime
+											return this.userData.propertyChange.colors;
+
+										};
+
+										material.setColorOption(change.selected);
+										animate();
+
+										// add gui
+										var name = material.name + ` diffuse`;
+										state[name] = change.selected;
+										var controller = gui.add(state, name, change.options.reduce(function(prev, curr, i) {
+
+											prev[curr.name] = i;
+											return prev;
+
+										}, {}));
+
+										controller.onChange(function(value) {
+
+											material.setColorOption(value);
+											animate();
+
+										});
+								}
+							}
+							
+							
+						}
 					};
 
 					MyExtension.prototype.onMesh = function(def, mesh) {
 						console.log('onMesh', def, mesh);
-					}
+					};
 
 					return new MyExtension( json );
 				});
-
-				console.log(loader);
 
 				THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
 				loader.setDRACOLoader( new THREE.DRACOLoader() );

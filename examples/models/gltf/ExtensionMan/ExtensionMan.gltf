@@ -348,23 +348,26 @@
             },
             "extensions": {
                 "EXT_my_extension": {
-                    "propertyChange": {
+                    "propertyChange": [{
                         "key": "baseColorFactor",
+                        "selected": 1,
                         "options": [
-                            [
+                            { "name": "Red",
+                              "value": [
                                 0.80,
                                 0.0,
                                 0.0,
                                 1.0
-                            ],
-                            [
-                                0.0,
-                                0.80,
-                                0.0,
-                                1.0
-                            ]
+                            ]},
+                            { "name": "Green",
+                              "value": [
+                                   0.0,
+                                   0.8,
+                                   0.0,
+                                   1.0
+                               ]}
                         ]
-                    }
+                    }]
                 }
             },
             "pbrMetallicRoughness": {

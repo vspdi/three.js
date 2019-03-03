@@ -3,6 +3,9 @@
         "generator": "FBX2glTF",
         "version": "2.0"
     },
+    "extensionsUsed": [
+        "EXT_my_extension"
+    ],
     "scene": 0,
     "buffers": [
         {
@@ -404,7 +407,16 @@
                     },
                     "indices": 12
                 }
-            ]
+            ],
+            "extensions": {
+                "EXT_my_extension": {
+                    "materialChange": {
+                        "changeable": [
+                            2, 3
+                        ]
+                    }
+                }
+            }
         }
     ],
     "nodes": [
@@ -492,7 +504,16 @@
                 1.0,
                 1.0,
                 1.0
-            ]
+            ],
+            "extensions": {
+                "EXT_my_extension": {
+                    "socket": {
+                        "mountable": [
+                            1
+                        ]
+                    }
+                }
+            }
         },
         {
             "name": "socket_2",
@@ -511,7 +532,16 @@
                 1.0,
                 1.0,
                 1.0
-            ]
+            ],
+            "extensions": {
+                "EXT_my_extension": {
+                    "socket": {
+                        "mountable": [
+                            1
+                        ]
+                    }
+                }
+            }
         }
     ]
 }

@@ -12,7 +12,7 @@ THREE.GLTFLoader = ( function () {
 
 		this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 		this.dracoLoader = null;
-
+		this.userExtensions = {};
 	}
 
 	GLTFLoader.prototype = {
@@ -118,6 +118,31 @@ THREE.GLTFLoader = ( function () {
 
 		},
 
+		registerExtension: function ( name, factory ) {
+
+			if(typeof factory !== 'function') {
+				throw new Error('THREE:GLTFLoader: factory must be a function that returns a extension instance');
+			}
+
+			// check if an user extension with the same name is already registered
+			if( this.userExtensions[name] ) {
+				throw new Error('THREE:GLTFLoader: Trying to overwrite already registered userExtension');
+			}
+
+			// check the name is already used by internally defined extensions
+			for( var key in EXTENSIONS ) {
+				if( EXTENSIONS.hasOwnProperty(key) && EXTENSIONS[key] === name ) {
+					throw new Error('THREE.GLTFLoader: Trying to add custom extension with internally registered name');
+				}
+			}
+
+			this.userExtensions[name] = {
+				factory: factory
+			};
+
+			return this;
+		},
+
 		parse: function ( data, path, onLoad, onError ) {
 
 			var content;
@@ -197,6 +222,14 @@ THREE.GLTFLoader = ( function () {
 							break;
 
 						default:
+
+							if( this.userExtensions[extensionName] ) {
+
+								// todo maybe add more than the json ?
+								extensions[ extensionName ] = this.userExtensions[extensionName].factory( json );
+								break;
+								
+							}
 
 							if ( extensionsRequired.indexOf( extensionName ) >= 0 ) {
 

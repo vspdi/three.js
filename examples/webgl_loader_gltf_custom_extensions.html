@@ -67,6 +67,7 @@
 			var clock = new THREE.Clock();
 
 			var state = {
+				test: 'Yes'
 			};
 
 			function onload() {
@@ -100,9 +101,11 @@
 
 					//
 
-					//buildGUI();
+					buildGUI();
 					initScene( );
-					animate();
+					orbitControls.addEventListener('change', function () {
+						animate();
+					});
 				} );
 
 			}
@@ -115,8 +118,7 @@
 				camera.position.set(1,1,5);
 				scene.add( camera );
 
-				scene.background = new THREE.Color( 0x222222 );
-				//scene.background = background;
+				scene.background = background;
 
 				var spot1;
 
@@ -134,30 +136,34 @@
 				spot1.intensity = 100;
 				spot1.decay = 2;
 
-				spot1.castShadow = true;
-				spot1.shadow.bias = 0.001;
-				spot1.shadow.mapSize.width = 2048;
-				spot1.shadow.mapSize.height = 2048;
-
-				console.log(renderer.shadowMap);
-
 				scene.add( spot1 );
 
-				renderer.shadowMap.enabled = true;
-				renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
 				orbitControls = new THREE.OrbitControls( camera, renderer.domElement );
+				orbitControls.target.set( 0, 1, 0 );
+				orbitControls.update();
 
 				var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xFFFFFF } );
 				var ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 512, 512 ), groundMaterial );
-				ground.receiveShadow = true;
 
 				ground.position.y = - 0.001;
 				ground.rotation.x = - Math.PI / 2;
 
-				scene.add( ground );
-
 				loader = new THREE.GLTFLoader();
+				
+				loader.registerExtension('EXT_my_extension', function ( json ) {
+					// this is the factory
+					function MyExtension( json ) {
+						this.name = 'EXT_my_extension';
+					}
+
+					MyExtension.prototype.foo = function() {
+
+					};
+
+					return new MyExtension( json );
+				});
+
+				console.log(loader);
 
 				THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
 				loader.setDRACOLoader( new THREE.DRACOLoader() );
@@ -173,7 +179,7 @@
 
 					object.traverse( function ( node ) {
 
-						if ( node.isMesh || node.isLight ) node.castShadow = true;
+						//if ( node.isMesh || node.isLight ) node.castShadow = true;
 
 						if ( node.material && ( node.material.isMeshStandardMaterial ||
 								( node.material.isShaderMaterial && node.material.envMap !== undefined ) ) ) {
@@ -186,9 +192,10 @@
 
 					scene.add( object );
 					onWindowResize();
-
-				});
+					animate();
+				});	
 			}
+
 
 			function onWindowResize() {
 
@@ -200,12 +207,11 @@
 			}
 
 			function animate() {
-				requestAnimationFrame( animate );
+				//requestAnimationFrame( animate );
 
-				orbitControls.update();
+				//orbitControls.update();
 
 				render();
-
 			}
 
 			function render() {
@@ -219,20 +225,19 @@
 				gui = new dat.GUI( { width: 330 } );
 				gui.domElement.parentElement.style.zIndex = 101;
 
-				var sceneCtrl = gui.add( state, 'scene', Object.keys( scenes ) );
-				sceneCtrl.onChange( reload );
-
-				var animCtrl = gui.add( state, 'playAnimation' );
-				animCtrl.onChange( toggleAnimations );
+				
+				var animCtrl = gui.add( state, 'test' );
+				animCtrl.onChange( function(data) {
+					console.log(data);
+				});
+				
 
 				updateGUI();
 
 			}
 
 			function updateGUI() {
-
-				if ( extensionControls ) extensionControls.remove();
-
+				/*
 				var sceneInfo = scenes[ state.scene ];
 
 				if ( sceneInfo.extensions.indexOf( state.extension ) === - 1 ) {
@@ -243,15 +248,7 @@
 
 				extensionControls = gui.add( state, 'extension', sceneInfo.extensions );
 				extensionControls.onChange( reload );
-
-			}
-
-			function reload() {
-
-				if ( loader && mixer ) mixer.stopAllAction();
-
-				updateGUI();
-				initScene( scenes[ state.scene ] );
+				*/
 
 			}
 

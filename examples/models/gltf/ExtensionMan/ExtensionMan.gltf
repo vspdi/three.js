@@ -346,6 +346,27 @@
                     "isTruePBR": false
                 }
             },
+            "extensions": {
+                "EXT_my_extension": {
+                    "propertyChange": {
+                        "key": "baseColorFactor",
+                        "options": [
+                            [
+                                0.80,
+                                0.0,
+                                0.0,
+                                1.0
+                            ],
+                            [
+                                0.0,
+                                0.80,
+                                0.0,
+                                1.0
+                            ]
+                        ]
+                    }
+                }
+            },
             "pbrMetallicRoughness": {
                 "baseColorFactor": [
                     0.800000011920929,
